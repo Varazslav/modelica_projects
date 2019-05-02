@@ -20,7 +20,7 @@ package ex04_stream_connector
     flange.p = p0;
     flange.h_outflow = hnom;
     annotation(
-      Icon(graphics = {Ellipse(fillColor = {0, 76, 143}, fillPattern = FillPattern.Sphere, extent = {{-100, 98}, {100, -98}}, endAngle = 360)}));
+      Icon(graphics = {Ellipse(fillColor = {0, 76, 143}, fillPattern = FillPattern.Sphere, extent = {{-100, 98}, {100, -98}}, endAngle = 360), Text(origin = {-1, 7}, lineColor = {255, 255, 255}, fillColor = {255, 255, 255}, extent = {{-81, 41}, {81, -41}}, textString = "%name")}, coordinateSystem(initialScale = 0.1)));
   end PressureBC;
 
   model Tank
@@ -86,56 +86,56 @@ package ex04_stream_connector
   end LinValve;
 
   model Mixer
+  extends MixerBase(p_c.p0 = 300000, p_h.hnom = 2e5, p_h.p0 = 300000, tank.A = 0.3 * 0.3, tank.hstart = 1e5, tank.pstart = 150000, vlv_c.Av = 1e-3, vlv_h.Av = 1e-3, vlv_M.Av = 8e-3);
+  Modelica.Blocks.Sources.Constant const(k = 1)  annotation(
+      Placement(visible = true, transformation(origin = {-84, 36}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+  Modelica.Blocks.Sources.Constant const1(k = 0.5)  annotation(
+      Placement(visible = true, transformation(origin = {40, 26}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+  Modelica.Blocks.Sources.Ramp ramp(duration = 5, height = 1, startTime = 30)  annotation(
+      Placement(visible = true, transformation(origin = {-86, 78}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Blocks.Math.Feedback feedback annotation(
+      Placement(visible = true, transformation(origin = {-46, 68}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   equation
-
+    connect(vlv_h.theta, ramp.y) annotation(
+      Line(points = {{-52, -30}, {-76, -30}, {-76, 78}, {-74, 78}}, color = {0, 0, 127}));
+    connect(feedback.y, vlv_c.theta) annotation(
+      Line(points = {{-36, 68}, {-50, 68}, {-50, 8}, {-52, 8}}, color = {0, 0, 127}));
+    connect(ramp.y, feedback.u1) annotation(
+      Line(points = {{-74, 78}, {-56, 78}, {-56, 68}, {-54, 68}}, color = {0, 0, 127}));
+    connect(feedback.u2, const.y) annotation(
+      Line(points = {{-46, 60}, {-46, 42.5}, {-84, 42.5}, {-84, 47}}, color = {0, 0, 127}));
+    connect(vlv_M.theta, const1.y) annotation(
+      Line(points = {{40, -8}, {40, -8}, {40, 14}, {40, 14}}, color = {0, 0, 127}));
   end Mixer;
 
   partial model MixerBase
-    ex04_stream_connector.Tank tank(A = 0.3 * 0.3, hstart = 1e5, pstart = 150000)  annotation(
-      Placement(visible = true, transformation(origin = {-2, 2}, extent = {{-14, -14}, {14, 14}}, rotation = 0)));
-    ex04_stream_connector.LinValve vlv_C(Av = 1e-3)  annotation(
-      Placement(visible = true, transformation(origin = {-48, -20}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    ex04_stream_connector.LinValve vlv_H(Av = 1e-3)  annotation(
-      Placement(visible = true, transformation(origin = {-50, 38}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    PressureBC p_h(hnom = 2e5, p0 = 300000)  annotation(
-      Placement(visible = true, transformation(origin = {-92, 38}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    ex04_stream_connector.PressureBC p_c(hnom = 3e5, p0 = 100000)  annotation(
-      Placement(visible = true, transformation(origin = {-88, -20}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    ex04_stream_connector.LinValve vlv_M(Av = 8e-3)  annotation(
-      Placement(visible = true, transformation(origin = {42, -10}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    ex04_stream_connector.PressureBC p_M annotation(
-      Placement(visible = true, transformation(origin = {74, -10}, extent = {{-10, -10}, {10, 10}}, rotation = 180)));
-  Modelica.Blocks.Sources.Ramp ramp annotation(
-      Placement(visible = true, transformation(origin = {-90, 90}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Blocks.Sources.Constant constOne annotation(
-      Placement(visible = true, transformation(origin = {-94, 64}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Blocks.Math.Feedback feedback annotation(
-      Placement(visible = true, transformation(origin = {-68, 62}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Blocks.Sources.Constant const1 annotation(
-      Placement(visible = true, transformation(origin = {42, 30}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+    ex04_stream_connector.PressureBC p_c annotation(
+      Placement(visible = true, transformation(origin = {-90, 10}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  ex04_stream_connector.PressureBC p_h annotation(
+      Placement(visible = true, transformation(origin = {-92, -30}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  ex04_stream_connector.LinValve vlv_c annotation(
+      Placement(visible = true, transformation(origin = {-52, 6}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  ex04_stream_connector.LinValve vlv_h annotation(
+      Placement(visible = true, transformation(origin = {-52, -32}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  ex04_stream_connector.Tank tank annotation(
+      Placement(visible = true, transformation(origin = {0, -2}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  ex04_stream_connector.LinValve vlv_M annotation(
+      Placement(visible = true, transformation(origin = {40, -10}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  ex04_stream_connector.PressureBC p_M annotation(
+      Placement(visible = true, transformation(origin = {80, -10}, extent = {{-10, -10}, {10, 10}}, rotation = 180)));
     equation
-    connect(feedback.y, vlv_C.theta) annotation(
-      Line(points = {{-59, 62}, {-48, 62}, {-48, -18}}, color = {0, 0, 127}));
-    connect(ramp.y, feedback.u2) annotation(
-      Line(points = {{-78, 90}, {-68, 90}, {-68, 54}}, color = {0, 0, 127}));
-    connect(constOne.y, feedback.u1) annotation(
-      Line(points = {{-83, 64}, {-80.5, 64}, {-80.5, 62}, {-76, 62}}, color = {0, 0, 127}));
-    connect(const1.y, vlv_M.theta) annotation(
-      Line(points = {{42, 19}, {42, -8}}, color = {0, 0, 127}));
-    connect(ramp.y, vlv_H.theta) annotation(
-      Line(points = {{-78, 90}, {-50, 90}, {-50, 40}, {-50, 40}}, color = {0, 0, 127}));
-    connect(vlv_M.fl_b, p_M.flange) annotation(
-      Line(points = {{52, -10}, {64, -10}, {64, -10}, {64, -10}}));
+    connect(p_M.flange, vlv_M.fl_b) annotation(
+      Line(points = {{70, -10}, {50, -10}, {50, -10}, {50, -10}}));
     connect(tank.fl_b, vlv_M.fl_a) annotation(
-      Line(points = {{12, -10}, {32, -10}}));
-    connect(vlv_H.fl_b, tank.fl_a) annotation(
-      Line(points = {{-40, 38}, {-16, 38}, {-16, -11}}));
-    connect(vlv_C.fl_b, tank.fl_a) annotation(
-      Line(points = {{-38, -20}, {-16, -20}, {-16, -11}}));
-    connect(p_c.flange, vlv_C.fl_a) annotation(
-      Line(points = {{-78, -20}, {-58, -20}}));
-    connect(p_h.flange, vlv_H.fl_a) annotation(
-      Line(points = {{-82, 38}, {-60, 38}, {-60, 38}, {-60, 38}}));
+      Line(points = {{10, -12}, {30, -12}, {30, -10}, {30, -10}}));
+    connect(vlv_h.fl_b, tank.fl_a) annotation(
+      Line(points = {{-42, -32}, {-10, -32}, {-10, -12}, {-10, -12}}));
+    connect(vlv_c.fl_b, tank.fl_a) annotation(
+      Line(points = {{-42, 6}, {-10, 6}, {-10, -12}, {-10, -12}}));
+    connect(p_c.flange, vlv_c.fl_a) annotation(
+      Line(points = {{-80, 10}, {-62, 10}, {-62, 6}, {-62, 6}}));
+    connect(p_h.flange, vlv_h.fl_a) annotation(
+      Line(points = {{-82, -30}, {-62, -30}, {-62, -32}, {-62, -32}}));
     annotation(
       Icon(graphics = {Rectangle(extent = {{-100, 100}, {100, -100}}), Text(origin = {-3, 2}, extent = {{-63, 22}, {63, -22}}, textString = "Mixer")}));
   end MixerBase;
