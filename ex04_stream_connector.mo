@@ -94,16 +94,16 @@ package ex04_stream_connector
   Modelica.Blocks.Sources.Ramp ramp(duration = 5, height = 1, startTime = 30)  annotation(
       Placement(visible = true, transformation(origin = {-86, 78}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   Modelica.Blocks.Math.Feedback feedback annotation(
-      Placement(visible = true, transformation(origin = {-46, 68}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+      Placement(visible = true, transformation(origin = {-14, 70}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   equation
+    connect(feedback.y, vlv_c.theta) annotation(
+      Line(points = {{-4, 70}, {-52, 70}, {-52, 8}, {-52, 8}}, color = {0, 0, 127}));
+    connect(feedback.u2, const.y) annotation(
+      Line(points = {{-14, 62}, {-14, 42.5}, {-84, 42.5}, {-84, 47}}, color = {0, 0, 127}));
+    connect(ramp.y, feedback.u1) annotation(
+      Line(points = {{-74, 78}, {-56, 78}, {-56, 70}, {-22, 70}}, color = {0, 0, 127}));
     connect(vlv_h.theta, ramp.y) annotation(
       Line(points = {{-52, -30}, {-76, -30}, {-76, 78}, {-74, 78}}, color = {0, 0, 127}));
-    connect(feedback.y, vlv_c.theta) annotation(
-      Line(points = {{-36, 68}, {-50, 68}, {-50, 8}, {-52, 8}}, color = {0, 0, 127}));
-    connect(ramp.y, feedback.u1) annotation(
-      Line(points = {{-74, 78}, {-56, 78}, {-56, 68}, {-54, 68}}, color = {0, 0, 127}));
-    connect(feedback.u2, const.y) annotation(
-      Line(points = {{-46, 60}, {-46, 42.5}, {-84, 42.5}, {-84, 47}}, color = {0, 0, 127}));
     connect(vlv_M.theta, const1.y) annotation(
       Line(points = {{40, -8}, {40, -8}, {40, 14}, {40, 14}}, color = {0, 0, 127}));
   end Mixer;
